@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(Controller.class)
-public class EcomMarketApplicationTests {
+public class RetryConnectionApplicationTests {
 
 	@Autowired
 	private MockMvc mockMvc;
