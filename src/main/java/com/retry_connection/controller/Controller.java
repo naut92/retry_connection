@@ -21,12 +21,11 @@ public class Controller {
 
     @GetMapping("/ip")
     public CompletableFuture<ResponseEntity<?>> getIp(HttpServletRequest request) throws ExecutionException, InterruptedException {
-        String someParameter = "parameter";
         CompletableFuture<Object> promise = CompletableFuture
-                .anyOf((CompletableFuture<?>) service.someMethod1(/*request.getRemoteAddr()*/"62.4.43.31", someParameter));
-        if (promise.get() == null)
-            return CompletableFuture.completedFuture(new ResponseEntity<>(HttpStatus.BAD_GATEWAY));
-        else
+                .anyOf((CompletableFuture<?>) service.someMethod1(/*request.getRemoteAddr()*/"62.4.43.31", "parameter"));
+        if (promise.get() != null)
             return CompletableFuture.completedFuture(ResponseEntity.ok(promise.get()));
+        else
+            return CompletableFuture.completedFuture(new ResponseEntity<>(HttpStatus.BAD_GATEWAY));
     }
 }
