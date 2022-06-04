@@ -14,15 +14,20 @@ public class RetryConnectionServiceImpl implements RetryConnectionService {
 
 
     @TimeoutConnection()
-    public CompletableFuture<Object> someMethod1(String remoteAddress, String someParameter) {
+    public String someMethod1(String remoteAddress, String someParameter) {
         //do something
-        return completedFuture(someParameter);
+        return someParameter;
     }
 
     @TimeoutConnection()
     public CompletableFuture<Object> someMethod2(String remoteAddress, Object someParameter) {
         //do something
         return completedFuture(someParameter);
+    }
+
+    @Override
+    public CompletableFuture<Object> someMethod3(String remoteAddress, String someParameter) {
+        return null;
     }
 }
 

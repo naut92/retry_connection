@@ -19,18 +19,14 @@ public class Controller {
         this.service = service;
     }
 
-
     @GetMapping("/ip")
     public CompletableFuture<ResponseEntity<?>> getIp(HttpServletRequest request) throws ExecutionException, InterruptedException {
-        //System.out.println(service.someMethod(request.getRemoteAddr()));
-        CompletableFuture<Object> response = CompletableFuture
-                .supplyAsync(() -> service.someMethod1(/*request.getRemoteAddr()*/"62.4.43.31", "ok"))
-                .thenApply(r -> new ResponseEntity<>(HttpStatus.BAD_GATEWAY));
-        //if (/*!(boolean)*/response.thenApply(result -> false))
-          //  return response.thenApply(result -> new ResponseEntity<>(HttpStatus.BAD_GATEWAY));
-        //else
-          //  return response.thenApply(result -> ResponseEntity.ok().body(service.someMethod1(request.getRemoteAddr(), "ok")));//result -> new ResponseEntity<>(HttpStatus.OK));
-        //return response;
-        return null;
+        String someParameter = "parameter";
+        CompletableFuture<Object> promise = CompletableFuture
+                .anyOf((CompletableFuture<?>) service.someMethod1(/*request.getRemoteAddr()*/"62.4.43.31", someParameter));
+        if (promise.get() == null)
+            return CompletableFuture.completedFuture(new ResponseEntity<>(HttpStatus.BAD_GATEWAY));
+        else
+            return CompletableFuture.completedFuture(ResponseEntity.ok(promise.get()));
     }
 }

@@ -27,23 +27,14 @@ public class AopService {
     public void retryPointCut() {
     }
 
-    @Around("retryPointCut()")
-    public CompletableFuture<Object> checkConnections(ProceedingJoinPoint pjp) throws Throwable {
-        String remoteAddress = Arrays.toString(new Object[]{pjp.getArgs()[0]});
-        //System.out.println(remoteAddress);
-        Object proceed = getClientIp(remoteAddress, pjp);
-        //System.out.println("proceed: " + proceed);
-        return completedFuture(proceed);
-    }
-
     @LimitConnection
     private int limitConnection;
 
     @TimePeriod
     private long timePeriod;
 
-    //private static final Set<byte[]> ips = new HashSet<>();
-    private static Set<String> ips = new HashSet<>();
+    private static Set<byte[]> ips = new HashSet<>();
+
     private static boolean timeReset = false;
 
     private boolean isPresent = false;
@@ -51,29 +42,29 @@ public class AopService {
     private static int countConnection = 0;
 
     @Async
-    public CompletableFuture<Object> getClientIp(/*byte[]*/ String remoteAddress, ProceedingJoinPoint pjp) throws Throwable {
+    @Around("retryPointCut()")
+    public CompletableFuture<Object> getClientIp(ProceedingJoinPoint pjp) throws Throwable {
 
+        byte[] remoteAddress = new byte[0];
         ips = addIp(remoteAddress);
 
         if (!isPresent) {
-            ips = addIpIfPresent(remoteAddress);
-            return completedFuture(true);
+            ips = addIpIfNotPresent(remoteAddress);
+            return completedFuture(pjp.proceed());
         } else {
             if (countConnection > limitConnection - 1) {
                 applyTimer();
-                return completedFuture(!timeReset);
             } else if (!timeReset) {
                 incrementCounter();
                 return completedFuture(pjp.proceed());
             }
         }
-        return completedFuture(false);
+        return null;
     }
 
-    private Set<String> addIp(String remoteAddress){
+    private Set<byte[]> addIp(byte[] remoteAddress){
         for (Object key : ips){
-            //if (Arrays.equals(remoteAddress, (byte[]) key)) {
-            if (remoteAddress.equals(key)){
+            if (Arrays.equals(remoteAddress, (byte[]) key)) {
                 isPresent = true;
                 break;
             }
@@ -81,7 +72,7 @@ public class AopService {
         return ips;
     }
 
-    private Set<String> addIpIfPresent(String remoteAddress){
+    private Set<byte []> addIpIfNotPresent(byte[] remoteAddress){
         ips.add(remoteAddress);
         countConnection = 1;
         log.info("add ip address in Set, countConnection: " + countConnection);
