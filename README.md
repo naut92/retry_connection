@@ -1,4 +1,4 @@
-- NOT finished
+
 - endpoint: http://localhost:8081/api/ip
 
 Docker image:
