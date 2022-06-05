@@ -10,14 +10,9 @@ public class RetryConnectionServiceImpl implements RetryConnectionService {
 
 
     @TimeoutConnection()
-    public String someMethod1(String someParameter) {
+    public Object someMethod1(Object someParameter) {
         //do something
-        return someParameter;
-    }
-
-    @TimeoutConnection()
-    public Object someMethod2(Object someParameter) {
-        //do something
+        someParameter = "parametr1";
         return someParameter;
     }
 }
