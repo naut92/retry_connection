@@ -2,6 +2,7 @@ package com.retry_connection.aop;
 
 import com.retry_connection.annotation.LimitConnection;
 import com.retry_connection.annotation.TimePeriod;
+import com.retry_connection.config.HttpRequestInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -41,11 +42,17 @@ public class AopService {
 
     private static int countConnection = 0;
 
+    private final HttpRequestInterceptor interceptor;
+
+    public AopService(HttpRequestInterceptor interceptor) {
+        this.interceptor = interceptor;
+    }
+
     @Async
     @Around("retryPointCut()")
     public CompletableFuture<Object> getClientIp(ProceedingJoinPoint pjp) throws Throwable {
 
-        byte[] remoteAddress = new byte[0];
+        byte[] remoteAddress = interceptor.getIp();
         ips = addIp(remoteAddress);
 
         if (!isPresent) {
