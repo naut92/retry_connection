@@ -82,20 +82,20 @@ public class AopService {
     private Set<byte []> addIpIfNotPresent(byte[] remoteAddress){
         ips.add(remoteAddress);
         countConnection = 1;
-        log.info("add ip address in Set, countConnection: " + countConnection);
+        log.info("add ip address in Set, countConnection: {}", countConnection);
         return ips;
     }
 
     private void applyTimer(){
         timeReset = true;
         countConnection = 0;
-        log.info("reset countConnection: " + countConnection + ", timeReset: " + true);
+        log.info("reset countConnection: {}, timeReset: " + true, countConnection);
         supplyAsync(this::time);
     }
 
     private synchronized void incrementCounter(){
         countConnection++;
-        log.info("count connection: " + countConnection);
+        log.info("count connection: {}", countConnection);
     }
 
     private boolean time(){

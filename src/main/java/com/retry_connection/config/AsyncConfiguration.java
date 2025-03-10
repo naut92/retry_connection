@@ -41,8 +41,8 @@ public class AsyncConfiguration extends AsyncConfigurerSupport {
 
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return (ex, method, params) -> {
-            log.info("Exception: " + ex.getMessage());
-            log.info("Method Name: " + method.getName());
+            log.info("Exception: {}", ex.getMessage());
+            log.info("Method Name: {}", method.getName());
             ex.printStackTrace();
         };
     }
